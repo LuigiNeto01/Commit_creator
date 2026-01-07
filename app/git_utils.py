@@ -12,11 +12,13 @@ def _run_git(repo_path: Path, args: list[str]) -> str:
             check=True,
             capture_output=True,
             text=True,
+            encoding="utf-8",
+            errors="replace",
         )
     except subprocess.CalledProcessError as exc:
-        stderr = exc.stderr.strip()
+        stderr = (exc.stderr or "").strip()
         raise GitCommandError(f"git {' '.join(args)} failed: {stderr}") from exc
-    return result.stdout.strip()
+    return (result.stdout or "").strip()
 
 def get_git_status(repo_path: Path) -> str:
     # Short status is enough to guide a commit message.
