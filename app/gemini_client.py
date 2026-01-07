@@ -42,7 +42,10 @@ def generate_commit(config: GeminiConfig, prompt: str) -> dict[str, str]:
     if not response.ok:
         raise GeminiError(f"Gemini request failed: {response.status_code} {response.text}")
 
-    text = _parse_response(response.json())
+    text = _parse_response(response.json()).strip()
+    if text.startswith("```"):
+        lines = [line for line in text.splitlines() if not line.strip().startswith("```")]
+        text = "\n".join(lines).strip()
     try:
         return json.loads(text)
     except json.JSONDecodeError as exc:
