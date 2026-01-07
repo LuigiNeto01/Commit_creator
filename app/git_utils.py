@@ -33,9 +33,12 @@ def add_all(repo_path: Path) -> None:
     # Stage all changes for the commit.
     _run_git(repo_path, ["add", "-A"])
 
-def commit(repo_path: Path, message: str) -> None:
-    # Create the commit with the suggested message.
-    _run_git(repo_path, ["commit", "-m", message])
+def commit(repo_path: Path, subject: str, body: str | None = None) -> None:
+    # Create the commit with a subject and optional body.
+    args = ["commit", "-m", subject]
+    if body:
+        args.extend(["-m", body])
+    _run_git(repo_path, args)
 
 def push(repo_path: Path) -> None:
     # Push to the current upstream branch.

@@ -74,19 +74,44 @@ def main() -> int:
             print(f"Gemini error: {exc}")
             return 1
 
-        prefix = result.get("prefix", "").strip()
-        message = result.get("message", "").strip()
+        prefix = str(result.get("prefix", "")).strip()
+        message = str(result.get("message", "")).strip()
+        description = str(result.get("description", "")).strip()
+        files = result.get("files", [])
         if prefix and not message.startswith(prefix):
             message = f"{prefix}: {message}"
+
+        file_lines = []
+        if isinstance(files, list):
+            for item in files:
+                if not isinstance(item, dict):
+                    continue
+                file_name = str(item.get("file", "")).strip()
+                summary = str(item.get("summary", "")).strip()
+                if file_name and summary:
+                    file_lines.append(f"- {file_name}: {summary}")
+
+        body_parts = []
+        if description:
+            body_parts.append(description)
+        if file_lines:
+            body_parts.append("Arquivos alterados:")
+            body_parts.extend(file_lines)
+        body = "\n".join(body_parts).strip() or None
 
         # Ask for confirmation before committing/pushing.
         print("\nCommit sugerido:")
         print(message)
+        if description:
+            print(f"\nDescricao: {description}")
+        if file_lines:
+            print("\nResumo por arquivo:")
+            print("\n".join(file_lines))
         approve = input("Aprovar e commitar/push? (s/n): ").strip().lower()
         if approve in {"s", "sim", "y", "yes"}:
             try:
                 add_all(repo_path)
-                commit(repo_path, message)
+                commit(repo_path, message, body)
                 push(repo_path)
             except GitCommandError as exc:
                 print(f"Git error: {exc}")
