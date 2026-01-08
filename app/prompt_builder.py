@@ -19,9 +19,9 @@ def build_prompt(req: CommitRequest) -> str:
         'O JSON deve ter as chaves: "prefix", "message", "description", "files".\n'
         '"files" deve ser uma lista de objetos com "file" e "summary".\n\n'
         "Regras:\n"
-        "- prefix deve ser um tipo Conventional Commit: feat, fix, chore, refactor, docs, test, build, ci. usando emote especifico para cada\n"
-        '- message deve comecar com "{prefix}: " e estar em portugues.\n'
-        "- prefix em message deve ser identico ao campo prefix.\n"
+        "- prefix deve ser um tipo Conventional Commit: feat, fix, chore, refactor, docs, test, build, ci.\n"
+        '- message deve comecar com "{prefix} usando emote especifico para cada: " e estar em portugues. \n'
+        "- prefix em message deve ser identico ao campo prefix. \n"
         "- mantenha message com no maximo 72 caracteres; se nao der, use a versao mais curta possivel.\n"
         "- description deve ser uma frase curta em portugues.\n"
         "- files deve listar cada arquivo alterado e um resumo curto do que mudou.\n"
